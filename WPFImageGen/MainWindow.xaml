@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFImageGen"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Image x:Name="MainImage" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="200" Margin="322,71,0,0"/>
-        <Label x:Name="lblText" Content="Label" HorizontalAlignment="Center" Margin="0,31,0,0" VerticalAlignment="Top" Width="453"/>
+        Title="MainWindow" Height="450" Width="400">
+    <Grid Width="400">
+        <Image x:Name="MainImage" HorizontalAlignment="Stretch" Height="240" VerticalAlignment="Stretch" Width="240"/>
+        <Label x:Name="lblText" Content="Label" HorizontalAlignment="Center" Margin="0,398,0,0" VerticalAlignment="Top" Width="380"/>
+        <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="33,26,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="236"/>
+        <Button x:Name="btnGenerate" Content="Generate" HorizontalAlignment="Left" Margin="284,26,0,0" VerticalAlignment="Top" Width="88" Click="btnGenerate_Click"/>
 
     </Grid>
 </Window>

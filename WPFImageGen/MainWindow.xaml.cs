@@ -23,8 +23,11 @@ namespace WPFImageGen
         public MainWindow()
         {
             InitializeComponent();
+        }
 
-            string sample = "Test test";
+        private void btnGenerate_Click(object sender, RoutedEventArgs e)
+        {
+            string sample = txtInput.Text;
             ConvertToBinary(sample);
         }
 
@@ -92,9 +95,9 @@ namespace WPFImageGen
                     distributedStrings.Add(singleChar);
                 }
             }
-            lblText.Content = distributedStrings.ToString();
             string[] pairsArray = distributedStrings.ToArray();
-            AssignPairsToRects(pairsArray);
+            //AssignPairsToRects(pairsArray);
+            CreateCode(pairsArray);
         }
 
         private void AssignPairsToRects (string[] pairs)
@@ -117,7 +120,6 @@ namespace WPFImageGen
                 //string pair = pairs[i];
                 int pairInt;
                 int.TryParse(pairs[i], out pairInt);
-
 
                 switch (pairInt)
                 {
@@ -161,10 +163,75 @@ namespace WPFImageGen
             bitmap.Resize((int)bitmap.Width * 20, (int)bitmap.Height * 20, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
 
             WriteableBitmap newBitmap = new WriteableBitmap(200, 200, 96, 96, PixelFormats.Bgra32, null);
-            newBitmap.FillRectangle(0, 0, 20, 20, Colors.Red);
+            newBitmap.FillRectangle(0, 0, 40, 40, Colors.Red);
+            WriteableBitmap newBitmap1 = new WriteableBitmap(200, 200, 96, 96, PixelFormats.Bgra32, null);
+            newBitmap1.FillTriangle(0, 0, 40, 0, 40, 40, Colors.Yellow);
+
+            newBitmap.FillTriangle(40, 40, 60, 40, 60, 60, Colors.Crimson);
 
             this.MainImage.Source = newBitmap;
+
+            lblText.Content = pairs.Length.ToString();
+            
+
+            
+            
         }
+
+        private void CreateCode(string[] pairs)
+        {
+            //check amount of pairs. If more than x amount, auto change size of code.
+            //Also needs to go through more conditioning before the data can be used.
+
+
+            int sizeMetric;
+            //if pairs.length >= 18(?) sizeMetric = 12
+            //?? = 18
+            //?? = 32
+
+            //replace all below definitions of size with variable int sizeMetric and equations to convert appropriately. I.E. int width = sizeMetric * 20;
+
+            int width = 240;
+            int height = 240;
+            WriteableBitmap bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+            int sF = 20;//Scale Factor:: the multiplier for how much bigger we're making this.
+            float cS = 0.5f;//centre shift: amount from centre point to draw corners.
+
+            //define blocked off areas.
+
+            for(int i = 0; i < pairs.Length; i++)
+            {
+                int pairInt;
+                int.TryParse(pairs[i], out pairInt);
+
+                int row = i / 12;
+                int col = i % 12;
+
+                int rectX = col * sF;
+                int rectY = row * sF;
+                
+
+                switch (pairInt)
+                {
+                    case 00:
+                        bitmap.FillRectangle(rectX, rectY, rectX + sF, rectY + sF, Colors.Cyan);
+                        break;
+                    case 01:
+                        bitmap.FillRectangle(rectX, rectY, rectX + sF, rectY + sF, Colors.Magenta);
+                        break;
+                    case 10:
+                        bitmap.FillRectangle(rectX, rectY, rectX + sF, rectY + sF, Colors.Yellow);
+                        break;
+                    case 11:
+                        bitmap.FillRectangle(rectX, rectY, rectX + sF, rectY + sF, Colors.Black);
+                        break;
+                }
+            }
+
+            this.MainImage.Source = bitmap;
+            lblText.Content = "Noice.";
+        }
+
 
     }
 }
