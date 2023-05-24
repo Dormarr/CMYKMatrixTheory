@@ -157,33 +157,14 @@ namespace WPFImageGen
                 bitmap.WritePixels(new Int32Rect(0, 0, 200, 200), pixelTest, width * 4, 0);
 
             }
-            
-            this.MainImage.Source = bitmap;
-            //lblText.Content = "Finished Rect Assignment.";
+            //need to upscale bitmap before rendering.
+            bitmap.Resize((int)bitmap.Width * 20, (int)bitmap.Height * 20, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+
+            WriteableBitmap newBitmap = new WriteableBitmap(200, 200, 96, 96, PixelFormats.Bgra32, null);
+            newBitmap.FillRectangle(0, 0, 20, 20, Colors.Red);
+
+            this.MainImage.Source = newBitmap;
         }
 
-        private int PixelValueSwitch(int i)
-        {
-            int pixelValue;
-            switch (i)
-            {
-                case 1:
-                    pixelValue = 20;
-                    return pixelValue;
-                case 2:
-                    pixelValue = 100;
-                    return pixelValue;
-                case 3: 
-                    pixelValue = 175;
-                    return pixelValue;
-                case 4:
-                    pixelValue = 220;
-                    return pixelValue;
-            }
-            return i;
-            
-            
-
-        }
     }
 }
