@@ -8,9 +8,11 @@
         Title="MainWindow" Height="450" Width="400">
     <Grid Width="400">
         <Image x:Name="MainImage" HorizontalAlignment="Stretch" Height="240" VerticalAlignment="Stretch" Width="240"/>
-        <Label x:Name="lblText" Content="Label" HorizontalAlignment="Center" Margin="0,398,0,0" VerticalAlignment="Top" Width="380"/>
+        <Label x:Name="lblText" Content="Label" HorizontalAlignment="Left" Width="174" Height="26" Margin="33,49,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="33,26,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="236"/>
         <Button x:Name="btnGenerate" Content="Generate" HorizontalAlignment="Left" Margin="284,26,0,0" VerticalAlignment="Top" Width="88" Click="btnGenerate_Click"/>
+        <Image x:Name="OverlayImage" Height="240" Width="240" Margin="80,97,80,97"/>
+        <Button x:Name="btnDownload" Content="Download" HorizontalAlignment="Stretch" Margin="54,0,0,12" VerticalAlignment="Bottom" Width="124" Click="btnDownload_Click"/>
 
     </Grid>
 </Window>
