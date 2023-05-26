@@ -7,7 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMYKMatrixTheory", "CMYKMat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMYKMatrix", "..\CMYKMatrix\CMYKMatrix\CMYKMatrix.csproj", "{5E6BFEAE-A2BC-420C-9FB7-69729EE024E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFImageGen", "WPFImageGen\WPFImageGen.csproj", "{56D7D9BE-B75C-4F99-94DA-A7D444C7A451}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFImageGen", "WPFImageGen\WPFImageGen.csproj", "{56D7D9BE-B75C-4F99-94DA-A7D444C7A451}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{898EBC2E-999F-4A97-97EB-C4D21A844BB1}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
