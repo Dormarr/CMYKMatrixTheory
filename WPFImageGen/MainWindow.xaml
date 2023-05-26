@@ -16,11 +16,10 @@
         <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="33,26,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="236" Grid.ColumnSpan="2"/>
         <Button x:Name="btnGenerate" Content="Generate" HorizontalAlignment="Left" Margin="284,26,0,0" VerticalAlignment="Top" Width="88" Click="btnGenerate_Click" Grid.ColumnSpan="2"/>
         <Button x:Name="btnDownload" Content="Download" Margin="165,0,111,12" VerticalAlignment="Bottom" Width="124" Click="btnDownload_Click" Grid.ColumnSpan="2"/>
-        <Image x:Name="OverlayImage" Height="240" Width="240" Margin="80,97,80,97" Grid.ColumnSpan="2">
-        </Image>
-        <Image x:Name="tempPhoto" Source="/PPP.png" Stretch="Fill" Width="240" Height="240" Opacity="0.2" Grid.ColumnSpan="2" Margin="80,0,80,0">
+        <Image x:Name="OverlayImage" Height="240" Width="240" Margin="80,80,80,80" Grid.ColumnSpan="2"/>
+        <Image x:Name="tempPhoto" Source="/PPP.png" Stretch="Fill" Width="240" Height="240" Opacity="0.2" Grid.ColumnSpan="2" Margin="80,0,80,0" Visibility="Hidden">
             <Image.OpacityMask>
-                <ImageBrush ImageSource="/Quay12x-Recovered.png"/>
+                <ImageBrush ImageSource="/PPP.png"/>
             </Image.OpacityMask>
         </Image>
 

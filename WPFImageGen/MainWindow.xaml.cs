@@ -19,6 +19,7 @@ using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 using System.Windows.Media.Media3D;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace WPFImageGen
 {
@@ -129,10 +130,10 @@ namespace WPFImageGen
 
                 byte[] pixelData = new byte[rectWidth * rectHeight * 4];
 
-                byte blue = 80;
-                byte green = 127;
+                byte blue = 90;
+                byte green = 110;
                 byte red = 255;
-                byte alpha = 100;
+                byte alpha = 0;
 
                 int pixelIndex = 0; //(y * rectWidth + x) * 4;
 
@@ -209,6 +210,9 @@ namespace WPFImageGen
                         bitmap.WritePixels(new Int32Rect(rectX, rectY, rectWidth, rectHeight), blackData, ryStride, 0);
                         break;
                 }
+
+                //combine overlay bitmap?
+                CreateOverlay(sizeMetric, sF);
             }
 
             this.MainImage.Source = bitmap;
@@ -255,59 +259,125 @@ namespace WPFImageGen
             {
                 case 12:
                     return coords12[i];
-                    break;
                 case 18:
                     return coords18[i];
-                    break;
                 case 32:
                     return coords32[i];
-                    break;
                 default:
                     return coords32[i];
-                    break;
             }
 
         }
 
-        private WriteableBitmap CreateOverlay(int sizeMetric)
+        private void CreateOverlay(int sizeMetric, int sF)
         {
-            int width = sizeMetric * 20;
-            int height = sizeMetric * 20;
-            int sF = 20; //scale factor again.
-            WriteableBitmap overlayBMP = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+            //just add pixels to bitmap.
 
-            //Create the overlay graphics for tracking and calibration.
-            (int, int)[] overlay12 = new (int, int)[] { (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8), (0, 9), (0, 10), (0, 11), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0) };
-            (int, int)[] overlay18 = new (int, int)[] { (0, 0) };
-            (int, int)[] overlay32 = new (int, int)[] { (0, 0) };
+            //Need 4 overlays per size. 1 for white, 1 for black, and 1 for each calibration colour square.
+            //Could you do colibration squares as incremental array progressing through colours?
+            int width = sizeMetric * sF;
+            int height = sizeMetric * sF;
 
+            WriteableBitmap bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
 
-
-            (int, int)[] overlayFormat = overlay12;
             switch (sizeMetric)
             {
                 case 12:
-                    overlayFormat = overlay12;
+                    bitmap = CreateOverlay12(sF, width, height);
                     break;
                 case 18:
-                    overlayFormat = overlay18;
+                    //bitmap = CreateOverlay18(sF, width, height);
                     break;
                 case 32:
-                    overlayFormat = overlay32;
+                    //bitmap = CreateOverlay32(sF, width, height);
                     break;
             }
+            
+            this.OverlayImage.Source = bitmap;
+        }
 
-            for(int i = 0; i < overlayFormat.Length; i++)
+        private WriteableBitmap CreateOverlay12(int sF, int width, int height)
+        {
+            WriteableBitmap bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+
+            //COORDINATE DATA
+            (int, int)[] overlay12B = new (int, int)[] { (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (0, 1), (0, 5), (0, 9), (0, 11), (0, 2), (5, 1), (9, 1), (11, 1), (2, 2), (3, 2), (5, 2), (6, 2), (8, 2), (10, 2), (11, 2), (0, 3), (2, 3), (3, 3), (5, 3), (11, 3), (0, 4), (5, 4), (11, 4), (0, 5), (1, 5), (2, 5), (3, 5), (4, 5), (5, 5), (11, 5), (0, 6), (11, 6), (0, 7), (11, 7), (0, 8), (11, 8), (0, 9), (11, 9), (0, 10), (11, 10), (0, 11), (1, 11), (2, 11), (3, 11), (4, 11), (5, 11), (6, 11), (7, 11), (8, 11), (9, 11), (10, 11), (11, 11) };
+            (int, int)[] overlay12W = new (int, int)[] { (1, 1), (2, 1), (3, 1), (4, 1), (1, 2), (4, 2), (7, 2), (9, 2), (1, 3), (4, 3), (1, 4), (2, 4), (3, 4), (4, 4) };
+            (int, int)[] overlay12C = new (int, int)[] { (6, 1), (7, 1), (8, 1) };
+
+            //COLOUR CODES
+            byte[] cyanColour = new byte[] { 255, 255, 0, 255 };
+            byte[] magentaColour = new byte[] { 255, 0, 255, 255 };
+            byte[] yellowColour = new byte[] { 0, 255, 255, 255 };
+            byte[] blackColour = new byte[] { 0, 0, 0, 255 };
+            byte[] whiteColour = new byte[] {255, 255, 255, 255 };
+
+            //Overlay Black Layer
+            for (int i = 0; i < overlay12B.Length; i++)
             {
-                int row = i / sizeMetric;
-                int col = i % sizeMetric;
+                int col = overlay12B[i].Item1;
+                int row = overlay12B[i].Item2;
 
                 int rectX = col * sF;
                 int rectY = row * sF;
 
-                //overlayBMP.FillRectangle(rectX, rectY, rectX + sF, rectY + sF, Colors.OrangeRed);
+                int rectWidth = width / 12;
+                int rectHeight = height / 12;
+
+                int ryStride = (rectWidth * bitmap.Format.BitsPerPixel + 7) / 8;
+
+                Byte[] blackData = ColourIndex(blackColour, rectX, rectY, rectHeight, rectWidth);
+                bitmap.WritePixels(new Int32Rect(rectX, rectY, rectWidth, rectHeight), blackData, ryStride, 0);
             }
-            return overlayBMP;
+            //Overlay White Layer
+            for (int i = 0; i < overlay12W.Length; i++)
+            {
+                int col = overlay12W[i].Item1;
+                int row = overlay12W[i].Item2;
+
+                int rectX = col * sF;
+                int rectY = row * sF;
+
+                int rectWidth = width / 12;
+                int rectHeight = height / 12;
+
+                int ryStride = (rectWidth * bitmap.Format.BitsPerPixel + 7) / 8;
+
+                Byte[] whiteData = ColourIndex(whiteColour, rectX, rectY, rectHeight, rectWidth);
+                bitmap.WritePixels(new Int32Rect(rectX, rectY, rectWidth, rectHeight), whiteData, ryStride, 0);
+            }
+            //Overlay Colour Calibration Layer
+            for (int i = 0; i < overlay12C.Length; i++)
+            {
+                int col = overlay12C[i].Item1;
+                int row = overlay12C[i].Item2;
+
+                int rectX = col * sF;
+                int rectY = row * sF;
+
+                int rectWidth = width / 12;
+                int rectHeight = height / 12;
+
+                int ryStride = (rectWidth * bitmap.Format.BitsPerPixel + 7) / 8;
+
+                switch (i)
+                {
+                    case 0:
+                        Byte[] cyanData = ColourIndex(cyanColour, rectX, rectY, rectHeight, rectWidth);
+                        bitmap.WritePixels(new Int32Rect(rectX, rectY, rectWidth, rectHeight), cyanData, ryStride, 0);
+                        break;
+                    case 1:
+                        Byte[] magentaData = ColourIndex(magentaColour, rectX, rectY, rectHeight, rectWidth);
+                        bitmap.WritePixels(new Int32Rect(rectX, rectY, rectWidth, rectHeight), magentaData, ryStride, 0);
+                        break;
+                    case 2:
+                        Byte[] yellowData = ColourIndex(yellowColour, rectX, rectY, rectHeight, rectWidth);
+                        bitmap.WritePixels(new Int32Rect(rectX, rectY, rectWidth, rectHeight), yellowData, ryStride, 0);
+                        break;
+                }
+
+            }
+            return bitmap;
         }
 
         private void btnDownload_Click(object sender, RoutedEventArgs e)
