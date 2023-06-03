@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -23,8 +24,8 @@ namespace WPFImageGen
 
         private void btnGenerate_Click(object sender, RoutedEventArgs e)
         {
-            string sample = txtInput.Text;
-            ConvertToBinary(sample);
+            string input = txtInput.Text;
+            ConvertToBinary(input);
         }
 
         private void ConvertToBinary(string input)
@@ -33,29 +34,38 @@ namespace WPFImageGen
             StringBuilder binaryBuilder = new StringBuilder();
 
             //detect for format. If all numbers then 6 bit.
+            HuffmanTree huffTree = new HuffmanTree();
+            huffTree.Build(input);
+            BitArray huffBits = huffTree.Encode(input);
+            //string huffString = Convert.ToString(huffBits);
 
-            int n;
-            bool isNumeric = int.TryParse(input, out n);
-            string nString = n.ToString();
+            //int n;
+            //bool isNumeric = int.TryParse(huffString, out n);
+            //string nString = n.ToString();
 
-            foreach (char c in input)
+            /*
+            foreach (char c in huffBits)
             {
-                string binary = Convert.ToString(c, 2).PadLeft(8, '0');
+                string binary = Convert.ToString(c, 2);//.PadLeft(8, '0');
                 binaryBuilder.Append(binary);
+            }*/
+
+            foreach(bool bit in huffBits)
+            {
+                binaryBuilder.Append(bit ? "1" : "0");
             }
 
+            
+            lblText.Content = huffTree.Decode(binaryBuilder.ToString());
 
 
-            lblText.Content = binaryBuilder.ToString();
-
-            //Encode with Reed Soloman before Encoding to pairs;
+            
 
             EncodingToPairs(binaryBuilder.ToString());
         }
 
         private void EncodingToPairs(string input)
         {
-            lblText.Content = "Begun Encoding to Pairs.";
             List<string> distributedStrings = new List<string>();
 
             for (int i = 0; i < input.Length; i += 2)
@@ -138,8 +148,6 @@ namespace WPFImageGen
                 int stride = (rectWidth * bitmap.Format.BitsPerPixel + 7) / 8;
                 Int32Rect rect = new Int32Rect(rectX, rectY, rectWidth, rectHeight);
                 bitmap.WritePixels(rect, pixelData, stride, 0);
-
-                lblText.Content = rect.ToString();
 
             }
 
