@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -34,32 +35,56 @@ namespace WPFImageGen
             StringBuilder binaryBuilder = new StringBuilder();
 
             //detect for format. If all numbers then 6 bit.
-            HuffmanTree huffTree = new HuffmanTree();
-            huffTree.Build(input);
-            BitArray huffBits = huffTree.Encode(input);
+
             //string huffString = Convert.ToString(huffBits);
 
             //int n;
             //bool isNumeric = int.TryParse(huffString, out n);
             //string nString = n.ToString();
+            
 
-            /*
-            foreach (char c in huffBits)
+            if(chkHuffman.IsChecked == true)
             {
-                string binary = Convert.ToString(c, 2);//.PadLeft(8, '0');
-                binaryBuilder.Append(binary);
-            }*/
+                HuffmanTree huffTree = new HuffmanTree();
+                huffTree.Build(input);
+                BitArray huffBits = huffTree.Encode(input);
 
-            foreach(bool bit in huffBits)
-            {
-                binaryBuilder.Append(bit ? "1" : "0");
+                foreach (bool bit in huffBits)
+                {
+                    binaryBuilder.Append(bit ? "1" : "0");
+                }
+
+                string dictString = "";
+
+                foreach(KeyValuePair<char, int> keyVal in huffTree.Freq)
+                {
+                    dictString += keyVal.Key + "" + keyVal.Value + "";
+                }
+
+                StringBuilder dictBinary = new StringBuilder();
+                
+                foreach(char c in dictString)
+                {
+                    string binary = Convert.ToString(c, 2);
+                    dictBinary.Append(binary);
+
+                }
+
+                lblText.Content = dictBinary.Length.ToString();
+                //lblText.Content = dictString;
+                //lblText.Content = huffTree.Decode(binaryBuilder.ToString());
+                //lblText.Content = binaryBuilder.ToString();
             }
+            else
+            {
+                foreach (char c in input)
+                {
+                    string binary = Convert.ToString(c, 2);//.PadLeft(8, '0');
+                    binaryBuilder.Append(binary);
+                    lblText.Content = binaryBuilder.Length.ToString();
+                }
 
-            
-            lblText.Content = huffTree.Decode(binaryBuilder.ToString());
-
-
-            
+            }
 
             EncodingToPairs(binaryBuilder.ToString());
         }

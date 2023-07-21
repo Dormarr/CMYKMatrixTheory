@@ -25,24 +25,25 @@ namespace WPFImageGen
 
             myface = CvInvoke.Imread("C:\\Users\\Ryan\\source\\repos\\CMYKMatrixTheory\\WPFImageGen\\img\\myface.png");
             CvInvoke.CvtColor(myface, myface, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
-
+            
             while (!pause)
             {
                 vc.Read(frame);
+                
                 /*
                 CvInvoke.CvtColor(frame, frameGray, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
 
                 CvInvoke.MatchTemplate(frameGray, myface, templateOutput, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed);
 
-                CvInvoke.Threshold(templateOutput, templateOutput, 0.85, 1, Emgu.CV.CvEnum.ThresholdType.ToZero);
+                CvInvoke.Threshold(templateOutput, templateOutput, 0.4, 1, Emgu.CV.CvEnum.ThresholdType.ToZero);
 
                 var matches = templateOutput.ToImage<Gray, byte>();
-
+                
                 for (int i = 0; i < matches.Rows; i++)
                 {
                     for (int j = 0; j < matches.Cols; j++)
                     {
-                        if (matches[i, j].Intensity > .8)
+                        if (matches[i, j].Intensity > .4)
                         {
 
                             System.Drawing.Point loc = new System.Drawing.Point(j, i);
@@ -53,7 +54,7 @@ namespace WPFImageGen
                         }
                     }
                 }
-
+                
                 Image<Bgr, byte> convertFrame = frame.ToImage<Bgr, byte>();
                 var image = convertFrame.InRange(new Bgr(75, 0, 0), new Bgr(255, 190, 190));
 
