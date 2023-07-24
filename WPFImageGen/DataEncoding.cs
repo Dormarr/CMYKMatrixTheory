@@ -77,52 +77,41 @@ namespace WPFImageGen
     public class DoReedSolomon
     {
 
-        public int[] Encode(string input)
+        int eccAmount;
+
+        public int[] Encode(string input, int type, int inputCount)
         {
             int fieldSize = input.Length;// + (input.Length / 2);
 
             GenericGF field = new GenericGF(285, 256, 0); //primitive, size, genBase
             ReedSolomonEncoder rsE = new ReedSolomonEncoder(field);
 
+            eccAmount = input.Length - inputCount;
+
+
             byte[] bytes = Encoding.UTF8.GetBytes(input);
 
             int[] bytesAsInts = bytes.Select(x => (int)x).ToArray();
+            /*
             for(int i = 0; i < bytesAsInts.Length / 2; i++)
             {
                 bytesAsInts.Append(0);
             }
+            */
+            //determine ecc amount based on type from input
 
-            rsE.Encode(bytesAsInts, 8);
+            rsE.Encode(bytesAsInts, eccAmount);
 
             return bytesAsInts.ToArray();
 
         }
 
-        public int[] Decode(byte[] input)
+        public int[] Decode(byte[] input, int inputCount)
         {
             int[] erasures = new int[] { };
             GenericGF field = new GenericGF(285, 256, 0);
 
             ReedSolomonDecoder rsD = new ReedSolomonDecoder(field);
-
-            /*
-            char[] chars = input.ToCharArray();
-            int[] output = new int[chars.Length];// Array.ConvertAll(chars, c => (int)Char.GetNumericValue(c));
-
-            for(int i = 0; i < output.Length; i++)
-            {
-                //output[i] = (int)chars[i];
-
-                if (chars[i] == '1')
-                {
-                    output[i] = 1;
-                }
-                else
-                {
-                    output[i] = 0;
-                }
-            }
-            */
 
             int[] output = new int[input.Length];
 
@@ -133,7 +122,10 @@ namespace WPFImageGen
 
             //int[] output = Array.ConvertAll(input.ToArray(), x => (int)x);
 
-            if(rsD.Decode(output, 7, erasures))
+            //eccAmount = input.Length - (inputCount / 2);
+            eccAmount = 4;
+
+            if(rsD.Decode(output, eccAmount, erasures))
             {
                 //data corrected.
                 return output;

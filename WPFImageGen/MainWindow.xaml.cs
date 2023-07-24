@@ -28,12 +28,45 @@ namespace WPFImageGen
 
         private void btnGenerate_Click(object sender, RoutedEventArgs e)
         {
-            string input = txtInput.Text.PadRight(15);
+            int type;
+
+            string input = txtInput.Text;
+            inputCount = input.Length;
+            string inOut;
+            
+            //Need to determine if input is alphanumeric or just numeric
+
+
+            //USE SWITCH STATEMENT INSTEAD
+            if(inputCount < 14   )
+            {
+                //Quay12
+                inOut = input.PadRight(14, 'x');
+                type = 1;
+            }
+            else if(inputCount < 32 && inputCount >= 14)
+            {
+                //Quay18
+                inOut = input.PadRight(44, 'x');
+                type = 2;
+            }
+            else if(inputCount < 64 && inputCount >= 32)
+            {
+                //Quay32
+                inOut = input.PadRight(64, 'x');//IT'S NOT 64, FIGURE OUT WHAT IT WILL BE. DESIGN THE QUAY32
+                type = 3;
+            }
+            else
+            {
+                lblText.Content = "Nope. Too big my man.";
+                return;
+            }
+            
             if(chkRS.IsChecked == true )
             {
-                inputCount = input.Length;
-                decodedTxt.Text = inputCount.ToString();
-                AddRSEncoding(input);
+                //string preface = DrawSymbolPreface(inputCount);
+                //string toEncode = string.Join("", preface, inOut);
+                AddRSEncoding(inOut, type, inputCount);
             }
             else
             {
@@ -42,7 +75,31 @@ namespace WPFImageGen
             
         }
 
-        private void AddRSEncoding(string input)
+        public string DrawSymbolPreface(int count)
+        {
+            //You have 10 flexible D-Bits to play with.
+            //Try and get the binary to 4 digits, reserve 4 D-Bits to display size data.
+            //Also appropriate 2 D-Bits to display data type (alpha num or num), possibly also mask code.
+
+            string preface = count.ToString().PadLeft(2, '0');
+
+            string maskCode = "1";
+            string dataType = "1";
+
+            string buff = string.Join(preface, dataType, maskCode);
+            char[] chars = buff.ToCharArray();
+
+            StringBuilder str = new StringBuilder();
+
+            foreach(char c in chars)
+            {
+                str.Append(c);
+            }
+
+            return str.ToString();
+        }
+
+        private void AddRSEncoding(string input, int type, int inputCount)
         {
             //do reed solomon
             
@@ -51,7 +108,7 @@ namespace WPFImageGen
                 //int[] ints = new int[256]; //fix size issue, RS says 512, this is 256, tinker with it.
 
                 DoReedSolomon rs = new DoReedSolomon();
-                int[] newints = rs.Encode(input);
+                int[] newints = rs.Encode(input, type, inputCount);
                 //output = newints.ToString();
                 char[] chars = new char[newints.Length];
 
@@ -80,7 +137,6 @@ namespace WPFImageGen
 
             string output = "";
 
-
             if (chkHuffman.IsChecked == true)
             {
                 HuffmanTree huffTree = new HuffmanTree();
@@ -108,12 +164,14 @@ namespace WPFImageGen
 
                 }
 
-                lblText.Content = dictBinary.Length.ToString();
-                //lblText.Content = dictString;
-                //lblText.Content = huffTree.Decode(binaryBuilder.ToString());
-                //lblText.Content = binaryBuilder.ToString();
+                string prefaceBin = DrawSymbolPreface(inputCount);
+                char[] chars = prefaceBin.ToCharArray();
+                string binString = CustomBinary.ConvertToFour(chars);
+                string toSend = string.Join("", binString, binaryBuilder.ToString());
 
-                EncodingToPairs(binaryBuilder.ToString());
+                lblText.Content = dictBinary.Length.ToString();
+
+                EncodingToPairs(toSend);
             }
             else
             {
@@ -121,8 +179,14 @@ namespace WPFImageGen
                 {
                     string binary = Convert.ToString(c, 2).PadLeft(8, '0'); //does it need to be padded??
                     binaryBuilder.Append(binary);
+
+                    string prefaceBin = DrawSymbolPreface(inputCount);
+                    char[] chars = prefaceBin.ToCharArray();
+                    string binString = CustomBinary.ConvertToFour(chars);
+                    string toSend = string.Join("", binString, binaryBuilder.ToString());
+
                     lblText.Content = binaryBuilder.Length.ToString();
-                    output = binaryBuilder.ToString();
+                    output = toSend;
                 }
 
                 EncodingToPairs(output);
@@ -139,7 +203,7 @@ namespace WPFImageGen
         {
             List<string> distributedStrings = new List<string>();
 
-            for (int i = 0; i < input.Length; i += 2)
+            for (int i = 0; i < input.Length; i++)// += 2)
             {
                 if (i + 1 < input.Length)
                 {
@@ -436,6 +500,7 @@ namespace WPFImageGen
         private void btnDownload_Click(object sender, RoutedEventArgs e)
         {
             Detect.Main2();
+            //opens webcam
         }
 
         private void decodeBtn_Click(object sender, RoutedEventArgs e)
@@ -444,15 +509,15 @@ namespace WPFImageGen
             string input = contentLbl.Text;
             if (contentLbl.Text != "Binary Label")
             {
+
+                //input = Truncate(input, input.Length - 24, 24);
+
                 if(chkRS.IsChecked == true)
                 {
                     DoReedSolomon rs = new DoReedSolomon();
-                    //int[] newints = rs.Decode(input);
-                    //string decoded = string.Join("", newints);
-                    //var data = GetBytesFromBinaryString(decoded);
-                    var data = GetBytesFromBinaryString(input);
+                    byte[] data = GetBytesFromBinaryString(input);
 
-                    int[] decodedInts = rs.Decode(data);
+                    int[] decodedInts = rs.Decode(data, inputCount);
 
                     if(decodedInts == null)
                     {
@@ -469,14 +534,18 @@ namespace WPFImageGen
 
                     string text = Encoding.UTF8.GetString(decodedBytes);
 
-                    decodedTxt.Text = text;
+                    string finalText = Truncate(text, inputCount, 0);
+
+                    decodedTxt.Text = finalText;
                 }
                 else
                 {
                     var data = GetBytesFromBinaryString(input);
                     string text = Encoding.UTF8.GetString(data);
 
-                    decodedTxt.Text = text;
+                    string finalText = Truncate(text, inputCount, 4);
+
+                    decodedTxt.Text = finalText;
                 }
 
                 //decodedTxt.Text = decoded;
@@ -490,6 +559,15 @@ namespace WPFImageGen
 
             //decodedTxt.Text = String.Join("", ints);
             
+        }
+
+        public static string Truncate(string input, int maxLength, int startIndex)
+        {
+            if (string.IsNullOrEmpty(input)) { return input; }
+
+            string text = input.Substring(startIndex, maxLength);
+
+            return text;
         }
 
         public Byte[] GetBytesFromBinaryString(String binary)
@@ -511,13 +589,13 @@ namespace WPFImageGen
             char[] content = contentLbl.Text.ToCharArray();            
 
             Random rnd = new Random();
-            int rnd1 = rnd.Next(1,content.Length - 1);
+            int rnd1 = rnd.Next(1,content.Length - 3);
             int rnd2 = rnd.Next(1, content.Length - 1);
             int rnd3 = rnd.Next(1, content.Length - 1);
 
             content[rnd1] = '1';
-            content[rnd2] = '0';
-            content[rnd3] = '1';
+            content[rnd1 + 1] = '0';
+            content[rnd1 + 2] = '1';
 
             contentLbl.Text = string.Join("", content);
         }
