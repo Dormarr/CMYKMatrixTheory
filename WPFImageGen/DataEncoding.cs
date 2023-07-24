@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +13,8 @@ using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.LinearAlgebra.Double;
+using STH1123.ReedSolomon;
+//using ZXing.Common.ReedSolomon;
 
 namespace WPFImageGen
 {
@@ -68,6 +72,78 @@ namespace WPFImageGen
             }
         }
 
+    }
+
+    public class DoReedSolomon
+    {
+
+        public int[] Encode(string input)
+        {
+            int fieldSize = input.Length;// + (input.Length / 2);
+
+            GenericGF field = new GenericGF(285, 256, 0); //primitive, size, genBase
+            ReedSolomonEncoder rsE = new ReedSolomonEncoder(field);
+
+            byte[] bytes = Encoding.UTF8.GetBytes(input);
+
+            int[] bytesAsInts = bytes.Select(x => (int)x).ToArray();
+            for(int i = 0; i < bytesAsInts.Length / 2; i++)
+            {
+                bytesAsInts.Append(0);
+            }
+
+            rsE.Encode(bytesAsInts, 8);
+
+            return bytesAsInts.ToArray();
+
+        }
+
+        public int[] Decode(byte[] input)
+        {
+            int[] erasures = new int[] { };
+            GenericGF field = new GenericGF(285, 256, 0);
+
+            ReedSolomonDecoder rsD = new ReedSolomonDecoder(field);
+
+            /*
+            char[] chars = input.ToCharArray();
+            int[] output = new int[chars.Length];// Array.ConvertAll(chars, c => (int)Char.GetNumericValue(c));
+
+            for(int i = 0; i < output.Length; i++)
+            {
+                //output[i] = (int)chars[i];
+
+                if (chars[i] == '1')
+                {
+                    output[i] = 1;
+                }
+                else
+                {
+                    output[i] = 0;
+                }
+            }
+            */
+
+            int[] output = new int[input.Length];
+
+            for(int i = 0; i < input.Length; i++)
+            {
+                output[i] = input[i];
+            }
+
+            //int[] output = Array.ConvertAll(input.ToArray(), x => (int)x);
+
+            if(rsD.Decode(output, 7, erasures))
+            {
+                //data corrected.
+                return output;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
     }
 
     public class HuffmanTree

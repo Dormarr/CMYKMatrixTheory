@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -17,6 +18,8 @@ namespace WPFImageGen
     public partial class MainWindow : System.Windows.Window
     {
 
+        public int inputCount;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,15 +28,48 @@ namespace WPFImageGen
 
         private void btnGenerate_Click(object sender, RoutedEventArgs e)
         {
-            string input = txtInput.Text;
-            ConvertToBinary(input);
+            string input = txtInput.Text.PadRight(15);
+            if(chkRS.IsChecked == true )
+            {
+                inputCount = input.Length;
+                decodedTxt.Text = inputCount.ToString();
+                AddRSEncoding(input);
+            }
+            else
+            {
+                ConvertToBinary(input);
+            }
+            
+        }
+
+        private void AddRSEncoding(string input)
+        {
+            //do reed solomon
+            
+            if (chkRS.IsChecked == true)
+            {
+                //int[] ints = new int[256]; //fix size issue, RS says 512, this is 256, tinker with it.
+
+                DoReedSolomon rs = new DoReedSolomon();
+                int[] newints = rs.Encode(input);
+                //output = newints.ToString();
+                char[] chars = new char[newints.Length];
+
+                for (int i = 0; i < newints.Length; i++)
+                {
+                    chars[i] = (char)newints[i];
+                }
+
+                string output = new string(chars);
+
+                ConvertToBinary(output);
+            }
         }
 
         private void ConvertToBinary(string input)
         {
-            lblText.Content = "Converting to binary.";
+            lblText.Content = input;
             StringBuilder binaryBuilder = new StringBuilder();
-
             //detect for format. If all numbers then 6 bit.
 
             //string huffString = Convert.ToString(huffBits);
@@ -41,9 +77,11 @@ namespace WPFImageGen
             //int n;
             //bool isNumeric = int.TryParse(huffString, out n);
             //string nString = n.ToString();
-            
 
-            if(chkHuffman.IsChecked == true)
+            string output = "";
+
+
+            if (chkHuffman.IsChecked == true)
             {
                 HuffmanTree huffTree = new HuffmanTree();
                 huffTree.Build(input);
@@ -56,14 +94,14 @@ namespace WPFImageGen
 
                 string dictString = "";
 
-                foreach(KeyValuePair<char, int> keyVal in huffTree.Freq)
+                foreach (KeyValuePair<char, int> keyVal in huffTree.Freq)
                 {
                     dictString += keyVal.Key + "" + keyVal.Value + "";
                 }
 
                 StringBuilder dictBinary = new StringBuilder();
-                
-                foreach(char c in dictString)
+
+                foreach (char c in dictString)
                 {
                     string binary = Convert.ToString(c, 2);
                     dictBinary.Append(binary);
@@ -74,19 +112,27 @@ namespace WPFImageGen
                 //lblText.Content = dictString;
                 //lblText.Content = huffTree.Decode(binaryBuilder.ToString());
                 //lblText.Content = binaryBuilder.ToString();
+
+                EncodingToPairs(binaryBuilder.ToString());
             }
             else
             {
                 foreach (char c in input)
                 {
-                    string binary = Convert.ToString(c, 2);//.PadLeft(8, '0');
+                    string binary = Convert.ToString(c, 2).PadLeft(8, '0'); //does it need to be padded??
                     binaryBuilder.Append(binary);
                     lblText.Content = binaryBuilder.Length.ToString();
+                    output = binaryBuilder.ToString();
                 }
 
+                EncodingToPairs(output);
             }
 
-            EncodingToPairs(binaryBuilder.ToString());
+
+            contentLbl.Text = output;
+            
+            
+
         }
 
         private void EncodingToPairs(string input)
@@ -392,6 +438,91 @@ namespace WPFImageGen
             Detect.Main2();
         }
 
+        private void decodeBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+            string input = contentLbl.Text;
+            if (contentLbl.Text != "Binary Label")
+            {
+                if(chkRS.IsChecked == true)
+                {
+                    DoReedSolomon rs = new DoReedSolomon();
+                    //int[] newints = rs.Decode(input);
+                    //string decoded = string.Join("", newints);
+                    //var data = GetBytesFromBinaryString(decoded);
+                    var data = GetBytesFromBinaryString(input);
+
+                    int[] decodedInts = rs.Decode(data);
+
+                    if(decodedInts == null)
+                    {
+                        decodedTxt.Text = "Uh oh, too much botch.";
+                        return;
+                    }
+
+                    byte[] decodedBytes = new byte[decodedInts.Length];
+
+                    for(int i = 0; i < decodedInts.Length; i++)
+                    {
+                        decodedBytes[i] = (byte)decodedInts[i];
+                    }
+
+                    string text = Encoding.UTF8.GetString(decodedBytes);
+
+                    decodedTxt.Text = text;
+                }
+                else
+                {
+                    var data = GetBytesFromBinaryString(input);
+                    string text = Encoding.UTF8.GetString(data);
+
+                    decodedTxt.Text = text;
+                }
+
+                //decodedTxt.Text = decoded;
+
+
+            }
+            else
+            {
+                return;
+            }
+
+            //decodedTxt.Text = String.Join("", ints);
+            
+        }
+
+        public Byte[] GetBytesFromBinaryString(String binary)
+        {
+            var list = new List<Byte>();
+
+            for (int i = 0; i < binary.Length; i += 8)
+            {
+                String t = binary.Substring(i, 8);
+
+                list.Add(Convert.ToByte(t, 2));
+            }
+
+            return list.ToArray();
+        }
+
+        private void Botch_Click(object sender, RoutedEventArgs e)
+        {
+            char[] content = contentLbl.Text.ToCharArray();            
+
+            Random rnd = new Random();
+            int rnd1 = rnd.Next(1,content.Length - 1);
+            int rnd2 = rnd.Next(1, content.Length - 1);
+            int rnd3 = rnd.Next(1, content.Length - 1);
+
+            content[rnd1] = '1';
+            content[rnd2] = '0';
+            content[rnd3] = '1';
+
+            contentLbl.Text = string.Join("", content);
+        }
+
+        //ADD A BOTCH BUTTON TO FUCK UP THE BINARY DATA TO BE DECODED. STRESS TEST RS.
     }
 }
 

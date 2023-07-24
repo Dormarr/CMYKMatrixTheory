@@ -5,19 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFImageGen"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="400">
-    <Grid Width="400">
+        Title="MainWindow" Height="700" Width="400">
+    <Grid Width="400" Height="700" Margin="0,0,0,-6">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400*"/>
+            <ColumnDefinition Width="399*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Image x:Name="MainImage" Height="240" Width="240" Margin="80,80,80,80" Grid.RowSpan="1"/>
+        <Image x:Name="MainImage" Height="240" Width="240" Margin="80,80,79,364"/>
         <Label x:Name="lblText" Content="Label" HorizontalAlignment="Left" Width="236" Height="24" Margin="33,49,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="33,26,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="236" Grid.ColumnSpan="2"/>
         <Button x:Name="btnGenerate" Content="Generate" HorizontalAlignment="Left" Margin="284,26,0,0" VerticalAlignment="Top" Width="88" Click="btnGenerate_Click" Grid.ColumnSpan="2"/>
-        <Button x:Name="btnDownload" Content="Open Camera" Margin="165,0,111,12" VerticalAlignment="Bottom" Width="124" Click="btnDownload_Click" Grid.ColumnSpan="2"/>
-        <Image x:Name="OverlayImage" Height="240" Width="240" Margin="80,80,80,80" Grid.ColumnSpan="2"/>
+        <Button x:Name="btnDownload" Content="Open Camera" Margin="141,0,134,19" VerticalAlignment="Bottom" Width="124" Click="btnDownload_Click"/>
+        <Image x:Name="OverlayImage" Height="240" Width="240" Margin="80,80,79,364"/>
         <CheckBox x:Name="chkHuffman" Content="Use Huffman" HorizontalAlignment="Left" Margin="284,51,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="chkRS" Content="Use Reed Solomon" HorizontalAlignment="Center" Margin="0,51,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="contentLbl" HorizontalAlignment="Left" Margin="33,381,0,0" TextWrapping="Wrap" Text="Binary Label" VerticalAlignment="Top" Height="116" Width="340"/>
+        <Button x:Name="decodeBtn" Content="Decode" HorizontalAlignment="Center" Margin="0,502,0,0" VerticalAlignment="Top" Width="120" Click="decodeBtn_Click"/>
+        <TextBlock x:Name="decodedTxt" HorizontalAlignment="Center" Margin="0,527,0,0" TextWrapping="Wrap" Text="Awaiting Decode..." VerticalAlignment="Top" Height="87" Width="339"/>
+        <Button Content="Botch" HorizontalAlignment="Left" Margin="275,0,0,0" VerticalAlignment="Center" Width="74" Click="Botch_Click"/>
 
     </Grid>
 </Window>
