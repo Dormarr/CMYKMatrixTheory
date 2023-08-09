@@ -123,7 +123,7 @@ namespace WPFImageGen
             //int[] output = Array.ConvertAll(input.ToArray(), x => (int)x);
 
             //eccAmount = input.Length - (inputCount / 2);
-            eccAmount = 4;
+            eccAmount = inputCount/2;
 
             if(rsD.Decode(output, eccAmount, erasures))
             {

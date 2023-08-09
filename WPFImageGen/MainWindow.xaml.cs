@@ -38,10 +38,10 @@ namespace WPFImageGen
 
 
             //USE SWITCH STATEMENT INSTEAD
-            if(inputCount < 14   )
+            if(inputCount < 14)
             {
                 //Quay12
-                inOut = input.PadRight(14, 'x');
+                inOut = input.PadRight(10, 'x');
                 type = 1;
             }
             else if(inputCount < 32 && inputCount >= 14)
@@ -50,10 +50,10 @@ namespace WPFImageGen
                 inOut = input.PadRight(44, 'x');
                 type = 2;
             }
-            else if(inputCount < 64 && inputCount >= 32)
+            else if(inputCount < 128 && inputCount >= 32)
             {
                 //Quay32
-                inOut = input.PadRight(64, 'x');//IT'S NOT 64, FIGURE OUT WHAT IT WILL BE. DESIGN THE QUAY32
+                inOut = input.PadRight(128, 'x');//IT'S NOT 128, FIGURE OUT WHAT IT WILL BE. DESIGN THE QUAY32
                 type = 3;
             }
             else
