@@ -108,12 +108,36 @@ namespace QuayCodeV2
 
         private void ConvertToBinary (string input)
         {
-            //input from RS
+            StringBuilder binaryBuilder = new StringBuilder();
+            string output = "empty";
+
+            foreach(char c in input)
+            {
+                string binary = Convert.ToString(c, 2).PadLeft(8, '0');
+                binaryBuilder.Append(binary);
+                output = binaryBuilder.ToString();
+            }
+
+            EncodeToPairs(output);
         }
 
         private void EncodeToPairs(string input)
         {
-            //As described.
+            List<string> distributedStrings = new List<string>();
+
+            for(int i = 0; i < input.Length; i++)
+            {
+                if(i + i < input.Length)
+                {
+                    string twoChars = input.Substring(i, 2);
+                    distributedStrings.Add(twoChars);
+                }
+                else
+                {
+                    string singleChar = input.Substring(i, 1);
+                    distributedStrings.Add(singleChar);
+                }
+            }
         }
 
         //============================   DECODE   ============================
