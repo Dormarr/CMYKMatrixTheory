@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QuayCodeV2"
         mc:Ignorable="d"
-        Title="QuayCode 0.2.1" Height="450" Width="800" Icon="/QuayIcon.png" ResizeMode="NoResize">
+        Title="QuayCode 0.2.2" Height="450" Width="800" Icon="/QuayIcon.png" ResizeMode="NoResize">
     <Grid>
         <Image x:Name="bitmapImg" HorizontalAlignment="Left" Height="280" Margin="481,54,0,0" VerticalAlignment="Top" Width="280"/>
-        <Label x:Name="Version_Number" Content="QuayCode Alpha 0.2.1" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="136"/>
+        <Label x:Name="Version_Number" Content="QuayCode Alpha 0.2.2" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="136"/>
         <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="197,55,0,0" TextWrapping="Wrap" Text="Input" VerticalAlignment="Top" Width="254" Height="50"/>
         <Button x:Name="encodeBtn" Content="Encode" HorizontalAlignment="Left" Margin="294,110,0,0" VerticalAlignment="Top" Width="157" Click="encodeBtn_Click"/>
         <TextBlock x:Name="encodedOut" HorizontalAlignment="Left" Margin="197,145,0,0" TextWrapping="Wrap" Text="EncodedOut" VerticalAlignment="Top" Height="97" Width="254"/>

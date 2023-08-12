@@ -37,15 +37,15 @@ namespace QuayCodeV2
 
         public static string Convert4Bit(char[] input)
         {
-            Dictionary<int, string> BitKey = new Dictionary<int, string> {
-                { '0', "0100" },
+            Dictionary<char, string> BitKey = new Dictionary<char, string> {
+                { '0', "0110" },
                 { '1', "0101" },
-                { '2', "0110" },
-                { '3', "0111" },
+                { '2', "1010" },
+                { '3', "1011" },
                 { '4', "1000" },
                 { '5', "1001" },
-                { '6', "1010" },
-                { '7', "1011" },
+                { '6', "0111" },
+                { '7', "0100" },
                 { '8', "1100" },
                 { '9', "1101" }
             };
@@ -56,7 +56,7 @@ namespace QuayCodeV2
             {
                 if (BitKey.ContainsKey(c))
                 {
-                    stringBuilder.Append(c);
+                    stringBuilder.Append(BitKey[c]);
                 }
             }
             return stringBuilder.ToString();
