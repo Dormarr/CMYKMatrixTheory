@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="QuayCode 0.2.1" Height="450" Width="800" Icon="/QuayIcon.png" ResizeMode="NoResize">
     <Grid>
-        <Image HorizontalAlignment="Left" Height="240" Margin="511,80,0,0" VerticalAlignment="Top" Width="240"/>
+        <Image x:Name="bitmapImg" HorizontalAlignment="Left" Height="280" Margin="481,54,0,0" VerticalAlignment="Top" Width="280"/>
         <Label x:Name="Version_Number" Content="QuayCode Alpha 0.2.1" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="136"/>
         <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="197,55,0,0" TextWrapping="Wrap" Text="Input" VerticalAlignment="Top" Width="254" Height="50"/>
         <Button x:Name="encodeBtn" Content="Encode" HorizontalAlignment="Left" Margin="294,110,0,0" VerticalAlignment="Top" Width="157" Click="encodeBtn_Click"/>
@@ -18,7 +18,8 @@
         <Label x:Name="debug1" Content="Debug1" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="175"/>
         <Label x:Name="debug2" Content="Debug2" HorizontalAlignment="Left" Margin="10,129,0,0" VerticalAlignment="Top" Width="175"/>
         <Label x:Name="debug3" Content="Debug3" HorizontalAlignment="Left" Margin="10,155,0,0" VerticalAlignment="Top" Width="175"/>
-        <Label x:Name="debug4" Content="Debug4" HorizontalAlignment="Left" Margin="10,181,0,0" VerticalAlignment="Top" Width="175"/>
+        <TextBlock x:Name="debug4" HorizontalAlignment="Left" Margin="10,186,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="225" Width="158"/>
+        <Button x:Name="dwnldBtn" Content="Download" HorizontalAlignment="Left" Margin="518,319,0,0" VerticalAlignment="Top" Width="166" Click="dwnldBtn_Click"/>
 
     </Grid>
 </Window>

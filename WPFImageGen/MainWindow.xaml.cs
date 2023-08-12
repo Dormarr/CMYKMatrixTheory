@@ -367,11 +367,9 @@ namespace WPFImageGen
                     pixelIndex += 4;
                 }
             }
-
             return pixelData;
-
-
         }
+
         private (int, int) DefineDataSlots(int i, int sizeMetric)
         {
             //Assigned data slot
