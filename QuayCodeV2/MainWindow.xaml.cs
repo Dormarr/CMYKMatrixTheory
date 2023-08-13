@@ -15,6 +15,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace QuayCodeV2
 {
@@ -37,11 +38,10 @@ namespace QuayCodeV2
             this.DragMove();
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e)
+        private void close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
 
         //============================   ENCODE   ============================
 
@@ -164,7 +164,6 @@ namespace QuayCodeV2
             else
             {
                 CreateGraphicCode(pairsArray);
-
             }
         }
 

@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <None Remove="QuayIcon.png" />
+    <None Remove="Resources\x_hover.png" />
+    <None Remove="x.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="QuayIcon.png" />
+    <Resource Include="Resources\QuayIcon.png" />
+    <Resource Include="Resources\x.png" />
+    <Resource Include="Resources\x_hover.png" />
   </ItemGroup>
 
 </Project>
