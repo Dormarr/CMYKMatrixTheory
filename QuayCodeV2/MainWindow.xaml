@@ -86,7 +86,7 @@
             <TabItem Header="Generate" Margin="2,2,-2,-4" Width="100" Foreground="#FF141414" Background="#FFF2F4F5" IsSelected="True" BorderBrush="Transparent">
                 <Grid Background="#00141414">
                     <Border BorderThickness="0" Margin="402,1,0,1" CornerRadius="7" Background="#141414"/>
-                    <Image x:Name="bitmapImg" HorizontalAlignment="Left" Height="302" Margin="540,69,0,0" VerticalAlignment="Top" Width="302">
+                    <Image x:Name="bitmapImg" HorizontalAlignment="Left" Height="300" Margin="540,69,0,0" VerticalAlignment="Top" Width="300">
                         <Image.Effect>
                             <DropShadowEffect Opacity="0.25" BlurRadius="35" Direction="270" ShadowDepth="4" Color="#F2F4F5"/>
                         </Image.Effect>

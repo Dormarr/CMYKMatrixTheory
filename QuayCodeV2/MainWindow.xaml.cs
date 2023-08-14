@@ -58,13 +58,14 @@ namespace QuayCodeV2
             {
                 sizeMetric = 18;
             }
-            else if(inputCount > 41 && inputCount <= 65)
+            else if(inputCount > 41 && inputCount <= 130)
             {
                 sizeMetric = 32;
             }
             else
             {
                 MessageBox.Show("Lessen the input guy, it's too damn long!");
+                return;
             }
 
             //determine data type?
@@ -75,7 +76,6 @@ namespace QuayCodeV2
 
         private void PadText(string input)
         {
-            //determine length and necessary length for padding to scale up to size of Quay.
             string output = "empty";
 
             switch (sizeMetric)
@@ -129,10 +129,11 @@ namespace QuayCodeV2
                 output = binaryBuilder.ToString();
             }
 
-            EncodeToPairs(output);
+            string[] toDraw = EncodeToPairs(output);
+            CreateGraphicCode(toDraw);
         }
 
-        private void EncodeToPairs(string input)
+        private string[] EncodeToPairs(string input)
         {
             List<string> distributedStrings = new List<string>();
 
@@ -151,20 +152,7 @@ namespace QuayCodeV2
             }
             string[] pairsArray = distributedStrings.ToArray();
 
-            string[] filler = new string[3];
-            filler[0] = "01";
-            filler[1] = "11";
-            filler[2] = "00";
-
-            if(pairsArray.Length == 6)
-            {
-                string[] combinedArray = pairsArray.Concat(filler).ToArray();
-                DrawHeader(combinedArray);
-            }
-            else
-            {
-                CreateGraphicCode(pairsArray);
-            }
+            return pairsArray;
         }
 
         private void GenerateHeader(string input)
@@ -172,16 +160,48 @@ namespace QuayCodeV2
             //What information actually goes in the header?
             //4 Dbits for symbol count. 1 Dbit for data type. 1 Dbit for mask type.
 
-            string symCoount = input.Length.ToString().PadLeft(2,'0');
+            string symCount;
+
+            if(sizeMetric == 32 || sizeMetric == 34)
+            {
+                symCount = input.Length.ToString().PadLeft(3, '0'); ;
+            }
+            else
+            {
+                symCount = input.Length.ToString().PadLeft(2, '0'); ;
+            }
+
             string dataType = "1"; //elaborate later.
             //string maskType = "4"; //elaborate later.
 
-            string toSend = symCoount + dataType;
+            string toSend = symCount + dataType;
             char[] prefixChars = toSend.ToCharArray();
+            string prefixToSend = CustomBinary.Convert4Bit(prefixChars);
 
-            string prefixFinal = CustomBinary.Convert4Bit(prefixChars);
+            AdjustHeader(prefixToSend);
+        }
 
-            EncodeToPairs(prefixFinal);
+        private void AdjustHeader(string prefix)
+        {
+            //Determine length (6 for Q12 & 18, 16 for Q32)
+            //Add filler. Only 3 pairs for definition, so 3 pairs for filler in Q12 & Q18.
+            //Q32 has a 16Dbit header and 2Dbit filler.
+            String converted;
+            switch (sizeMetric)
+            {
+                case 34:
+                    converted = "01100101101011001011";
+                    break;
+                default:
+                    converted = "011101";
+                    break;
+            }
+
+            string toSend = prefix + converted;
+
+            string[] finalPrefix = EncodeToPairs(toSend);
+
+            DrawHeader(finalPrefix);
         }
 
         //============================   DECODE   ============================
@@ -293,6 +313,11 @@ namespace QuayCodeV2
                     overlayW = overlay32W;
                     overlayC = overlay32C;
                     break;
+                default:
+                    overlayB = overlay32B;
+                    overlayW = overlay32W;
+                    overlayC = overlay32C;
+                    break;
             }
 
             int rectW = sF;
@@ -361,7 +386,7 @@ namespace QuayCodeV2
 
             (int, int)[] prefixSlots12 = new (int, int)[] { (7, 3), (8, 3), (9, 3), (10, 3), (11, 3), (12, 3), (10, 12), (11, 12), (12, 12) };
             (int, int)[] prefixSlots18 = new (int, int)[] { (12, 2), (13, 2), (14, 2), (15, 2), (16, 2), (17, 2), (10, 18), (11, 18), (12, 18) };
-            (int, int)[] prefixSlots32 = new (int, int)[] { (12, 2), (13, 2), (14, 2), (15, 2), (16, 2), (17, 2), (18, 2), (19, 2), (20, 2), (21, 2), (22, 2), (23, 2), (24, 2), (25, 2), (26, 2), (27, 2) };
+            (int, int)[] prefixSlots32 = new (int, int)[] { (12, 2), (13, 2), (14, 2), (15, 2), (16, 2), (17, 2), (18, 2), (19, 2), (20, 2), (21, 2), (22, 2), (23, 2), (24, 2), (25, 2), (26, 2), (27, 2), (25, 32), (26, 32) };
 
             (int, int)[] prefixSlots = null;
 
@@ -458,7 +483,7 @@ namespace QuayCodeV2
                     return coords12[i];
                 case 20:
                     return coords18[i];
-                case 3:
+                case 34:
                     return coords32[i];
                 default:
                     return coords32[i];
@@ -469,7 +494,9 @@ namespace QuayCodeV2
 
         private void dwnldBtn_Click(object sender, RoutedEventArgs e)
         {
-            DownloadBitmap(bitmap, "C:\\Users\\Ryan\\Desktop\\Software Testing Ground" + "quay" + DateTime.UtcNow.Ticks + ".png");
+            string downloadsFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+
+            DownloadBitmap(bitmap, downloadsFolderPath + "quay" + DateTime.UtcNow.Ticks + ".png");
         }
 
         private void DownloadBitmap(WriteableBitmap finalBitmap, string filePath)
@@ -505,8 +532,6 @@ namespace QuayCodeV2
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
                 encoder.Save(stream);
             }
-
-            //MessageBox.Show("Bitmap saved as PNG.");
         }
     }
 }
