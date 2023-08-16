@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QuayCodeV2"
         mc:Ignorable="d"
-        Title="QuayCode 0.2.2" Height="636" Width="1028" Icon="Resources/QuayIcon.png" ResizeMode="NoResize" Background="#00141414" Foreground="#00000000" WindowStyle="None" AllowsTransparency="True">
+        Title="QuayCode 0.2.3" Height="636" Width="1028" Icon="Resources/QuayIcon.png" ResizeMode="NoResize" Background="#00141414" Foreground="#00000000" WindowStyle="None" AllowsTransparency="True">
     <Window.Resources>
         <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
         <Style x:Key="MyButton" TargetType="Button">
@@ -122,7 +122,7 @@
                     <TextBlock x:Name="encodedOut" HorizontalAlignment="Left" Margin="36,284,0,0" TextWrapping="Wrap" Text="EncodedOut" VerticalAlignment="Top" Height="97" Width="254"/>
                     <Button x:Name="decodeBtn" Content="Decode" HorizontalAlignment="Left" Margin="133,381,0,0" VerticalAlignment="Top" Width="157" Click="decodeBtn_Click"/>
                     <TextBlock x:Name="decodedOut" HorizontalAlignment="Left" Margin="36,419,0,0" TextWrapping="Wrap" Text="DecodedOut" VerticalAlignment="Top" Height="97" Width="254"/>
-                    <Label x:Name="Version_Number" Content="QuayCode Alpha 0.2.2" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="171" Foreground="#FFF2F4F5" FontSize="10" HorizontalContentAlignment="Right"/>
+                    <Label x:Name="Version_Number" Content="QuayCode™ Alpha 0.2.3" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="171" Foreground="#FFF2F4F5" FontSize="10" HorizontalContentAlignment="Right"/>
                     <Rectangle x:Name="draggable" HorizontalAlignment="Left" Height="37" Margin="435,4,0,0" VerticalAlignment="Top" Width="489" MouseDown="drag_MouseDown" Fill="#FF141414"/>
                     <Button x:Name="closeBtn" Margin="896,10,10,504" Click="close_Click" Style="{StaticResource MyButton}">
                         <Button.Content>
@@ -146,7 +146,9 @@
                 <Grid Background="#f2f4f5"/>
             </TabItem>
             <TabItem Header="Settings" Margin="58,2,-58,-4" Width="100" Background="#FFF2F4F5" BorderBrush="Transparent">
-                <Grid Background="#f2f4f5"/>
+                <Grid Background="#f2f4f5">
+                    <Label Content="Pending Functionality" HorizontalAlignment="Center" VerticalAlignment="Center" Height="77" Width="474" FontSize="48"/>
+                </Grid>
             </TabItem>
         </TabControl>
 

@@ -113,8 +113,6 @@ namespace QuayCodeV2
             ConvertToBinary(output);
 
             encodedOut.Text = output;
-
-
         }
 
         private void ConvertToBinary (string input)
@@ -157,7 +155,6 @@ namespace QuayCodeV2
 
         private void GenerateHeader(string input)
         {
-            //What information actually goes in the header?
             //4 Dbits for symbol count. 1 Dbit for data type. 1 Dbit for mask type.
 
             string symCount;
@@ -183,11 +180,8 @@ namespace QuayCodeV2
 
         private void AdjustHeader(string prefix)
         {
-            //Determine length (6 for Q12 & 18, 16 for Q32)
-            //Add filler. Only 3 pairs for definition, so 3 pairs for filler in Q12 & Q18.
-            //Q32 has a 16Dbit header and 2Dbit filler.
             String converted;
-            switch (sizeMetric)
+            switch (sizeMetric)//this is just filler to round out the code.
             {
                 case 34:
                     converted = "01100101101011001011";

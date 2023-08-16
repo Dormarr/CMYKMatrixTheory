@@ -5,12 +5,22 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <Title>Quay Code</Title>
+    <Description>A CMYK 2D Matrix Code Generator.</Description>
+    <PackageIcon>QuayIcon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="QuayIcon.png" />
     <None Remove="Resources\x_hover.png" />
     <None Remove="x.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Downloads\QuayIcon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
