@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QuayCodeV2"
         mc:Ignorable="d"
-        Title="QuayCode 0.2.3" Height="636" Width="1028" Icon="Resources/QuayIcon.png" ResizeMode="NoResize" Background="#00141414" Foreground="#00000000" WindowStyle="None" AllowsTransparency="True">
+        Title="QuayCode 0.2.7" Height="636" Width="1028" Icon="Resources/QuayIcon.png" ResizeMode="NoResize" Background="#00141414" Foreground="#00000000" WindowStyle="None" AllowsTransparency="True">
     <Window.Resources>
         <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
         <Style x:Key="MyButton" TargetType="Button">
@@ -85,14 +85,18 @@
         <TabControl Foreground="#00000000" BorderBrush="#00ACACAC" Background="Transparent">
             <TabItem Header="Generate" Margin="2,2,-2,-4" Width="100" Foreground="#FF141414" Background="#FFF2F4F5" IsSelected="True" BorderBrush="Transparent">
                 <Grid Background="#00141414">
-                    <Border BorderThickness="0" Margin="402,1,0,1" CornerRadius="7" Background="#141414"/>
-                    <Image x:Name="bitmapImg" HorizontalAlignment="Left" Height="300" Margin="540,69,0,0" VerticalAlignment="Top" Width="300">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="95*"/>
+                        <ColumnDefinition Width="372*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderThickness="0" Margin="212,30,0,29" CornerRadius="7" Background="#141414" Grid.Column="1"/>
+                    <Image x:Name="bitmapImg" HorizontalAlignment="Left" Height="300" Margin="350,99,0,0" VerticalAlignment="Top" Width="300" Grid.Column="1">
                         <Image.Effect>
                             <DropShadowEffect Opacity="0.25" BlurRadius="35" Direction="270" ShadowDepth="4" Color="#F2F4F5"/>
                         </Image.Effect>
                     </Image>
-                    <Border Background="#F2F4F5" BorderThickness="0" Margin="0,0,500,0" CornerRadius="0,7,7,7"/>
-                    <Button x:Name="dwnldBtn" Content="Download" Style="{StaticResource DownloadBtn}" HorizontalAlignment="Left" Margin="586,406,0,0" VerticalAlignment="Top" Width="215" Click="dwnldBtn_Click" Height="36" FontSize="18" Background="#FFF2F4F5" Foreground="#B2141414" Opacity="0.9" BorderThickness="1,1,1,2">
+                    <Border Background="#F2F4F5" BorderThickness="0" Margin="0,0,500,0" CornerRadius="0,7,7,7" Grid.ColumnSpan="2"/>
+                    <Button x:Name="dwnldBtn" Content="Download" Style="{StaticResource DownloadBtn}" HorizontalAlignment="Left" Margin="396,436,0,0" VerticalAlignment="Top" Width="215" Click="dwnldBtn_Click" Height="36" FontSize="18" Background="#FFF2F4F5" Foreground="#B2141414" Opacity="0.9" BorderThickness="1,1,1,2" Grid.Column="1">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="7"/>
@@ -105,8 +109,8 @@
                             </LinearGradientBrush>
                         </Button.BorderBrush>
                     </Button>
-                    <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="36,116,0,0" TextWrapping="Wrap" Text="Input" VerticalAlignment="Top" Width="361" Height="113" SelectionBrush="#FFC8DFF1" Background="Transparent"/>
-                    <Button x:Name="encodeBtn" Content="Encode" Style="{StaticResource MyButton2}" HorizontalAlignment="Left" Margin="138,244,0,0" VerticalAlignment="Top" Width="157" Click="encodeBtn_Click" Height="26" Background="#FF141414" Foreground="#FFF2F4F5">
+                    <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="36,116,0,0" TextWrapping="Wrap" Text="Input" VerticalAlignment="Top" Width="361" Height="113" SelectionBrush="#FFC8DFF1" Background="Transparent" Grid.ColumnSpan="2"/>
+                    <Button x:Name="encodeBtn" Content="Encode" Style="{StaticResource MyButton2}" HorizontalAlignment="Left" Margin="138,244,0,0" VerticalAlignment="Top" Width="157" Click="encodeBtn_Click" Height="26" Background="#FF141414" Foreground="#FFF2F4F5" Grid.ColumnSpan="2">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="7"/>
@@ -119,12 +123,12 @@
                             </LinearGradientBrush>
                         </Button.BorderBrush>
                     </Button>
-                    <TextBlock x:Name="encodedOut" HorizontalAlignment="Left" Margin="36,284,0,0" TextWrapping="Wrap" Text="EncodedOut" VerticalAlignment="Top" Height="97" Width="254"/>
-                    <Button x:Name="decodeBtn" Content="Decode" HorizontalAlignment="Left" Margin="133,381,0,0" VerticalAlignment="Top" Width="157" Click="decodeBtn_Click"/>
-                    <TextBlock x:Name="decodedOut" HorizontalAlignment="Left" Margin="36,419,0,0" TextWrapping="Wrap" Text="DecodedOut" VerticalAlignment="Top" Height="97" Width="254"/>
-                    <Label x:Name="Version_Number" Content="QuayCode™ Alpha 0.2.3" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="171" Foreground="#FFF2F4F5" FontSize="10" HorizontalContentAlignment="Right"/>
-                    <Rectangle x:Name="draggable" HorizontalAlignment="Left" Height="37" Margin="435,4,0,0" VerticalAlignment="Top" Width="489" MouseDown="drag_MouseDown" Fill="#FF141414"/>
-                    <Button x:Name="closeBtn" Margin="896,10,10,504" Click="close_Click" Style="{StaticResource MyButton}">
+                    <TextBlock x:Name="encodedOut" HorizontalAlignment="Left" Margin="36,284,0,0" TextWrapping="Wrap" Text="EncodedOut" VerticalAlignment="Top" Height="97" Width="254" Grid.ColumnSpan="2"/>
+                    <Button x:Name="decodeBtn" Content="Decode" HorizontalAlignment="Left" Margin="133,381,0,0" VerticalAlignment="Top" Width="157" Click="decodeBtn_Click" Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="decodedOut" HorizontalAlignment="Left" Margin="36,419,0,0" TextWrapping="Wrap" Text="DecodedOut" VerticalAlignment="Top" Height="97" Width="254" Grid.ColumnSpan="2"/>
+                    <Label x:Name="Version_Number" Content="QuayCode™ Alpha 0.2.7" HorizontalAlignment="Right" Margin="0,0,6,36" VerticalAlignment="Bottom" Width="171" Foreground="#FFF2F4F5" FontSize="10" HorizontalContentAlignment="Right" Grid.Column="1"/>
+                    <Rectangle x:Name="draggable" HorizontalAlignment="Left" Height="37" Margin="249,32,0,0" VerticalAlignment="Top" Width="489" MouseDown="drag_MouseDown" Fill="#FF141414" Grid.Column="1"/>
+                    <Button x:Name="closeBtn" Margin="706,36,10,477" Click="close_Click" Style="{StaticResource MyButton}" Grid.Column="1">
                         <Button.Content>
                             <Image Height="17" Width="17">
                                 <Image.Style>
@@ -143,7 +147,10 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Read" Margin="30,2,-30,-4" Width="100" Background="#FFF2F4F5" BorderBrush="Transparent">
-                <Grid Background="#f2f4f5"/>
+                <Grid Background="#f2f4f5">
+                    <Button Content="Detect" HorizontalAlignment="Center" Click="detect_Click" Margin="0,377,0,0" VerticalAlignment="Top" Height="37" Width="118"/>
+                    <TextBlock x:Name="decodedText" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Output:..." VerticalAlignment="Center" Height="95" Width="262"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Settings" Margin="58,2,-58,-4" Width="100" Background="#FFF2F4F5" BorderBrush="Transparent">
                 <Grid Background="#f2f4f5">

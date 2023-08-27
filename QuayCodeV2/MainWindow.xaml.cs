@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing.IndexedProperties;
+using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Emgu.CV;
 using Microsoft.Win32;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -205,12 +209,98 @@ namespace QuayCodeV2
 
         }
 
+        private void detect_Click(object sender, RoutedEventArgs e)
+        {
+            Detect dtc = new Detect();
+            dtc.IdentifyFromVideo();
+        }
+
+        public async void DecodeMain(string input)
+        {
+            //await Task.Delay(250);
+            //string converted = BinaryToUtf8Text(input);
+            int inputCount = 6;//???
+            ReedSolomonEncoding rs = new ReedSolomonEncoding();
+            byte[] data = GetBytesFromBinaryString(input);
+
+            /*
+            int[] decodedInts = rs.Decode(data, inputCount);
+
+            if (decodedInts == null)
+            {
+                return;
+            }
+
+            byte[] decodedBytes = new byte[decodedInts.Length];
+
+            for (int i = 0; i < decodedInts.Length; i++)
+            {
+                decodedBytes[i] = (byte)decodedInts[i];
+            }
+
+            string converted = Encoding.UTF8.GetString(decodedBytes);*/
+            string converted = Encoding.UTF8.GetString(data);
+
+            decodedText.Text = "Output: " + converted;
+            
+            
+        }
+
+        static string BinaryToUtf8Text(string binaryRepresentation)
+        {
+            int chunkSize = 8; // Number of binary digits in each chunk
+            int totalChunks = binaryRepresentation.Length / chunkSize;
+            string[] binaryChunks = new string[totalChunks];
+
+            for (int i = 0; i < totalChunks; i++)
+            {
+                binaryChunks[i] = binaryRepresentation.Substring(i * chunkSize, chunkSize);
+            }
+
+            byte[] bytes = new byte[binaryChunks.Length];
+            for (int i = 0; i < binaryChunks.Length; i++)
+            {
+                bytes[i] = Convert.ToByte(binaryChunks[i], 2);
+            }
+
+            ReedSolomonEncoding rsD = new ReedSolomonEncoding();
+            int[] intArray = rsD.Decode(bytes, 10); //take amount from header.
+            if(intArray != null)
+            {
+                byte[] byteArray = new byte[intArray.Length * 4];
+                for (int i = 0; i < intArray.Length; i++)
+                {
+                    byte[] intBytes = BitConverter.GetBytes(intArray[i]);
+                    Array.Copy(intBytes, 0, byteArray, i * 4, 4);
+                }
+                return Encoding.UTF8.GetString(byteArray);
+            }
+            else
+            {
+                return "botch";
+            }
+        }
+
+        public static Byte[] GetBytesFromBinaryString(string binary)
+        {
+            var list = new List<Byte>();
+
+            for (int i = 0; i < binary.Length; i += 8)
+            {
+                String t = binary.Substring(i, 8);
+
+                list.Add(Convert.ToByte(t, 2));
+            }
+
+            return list.ToArray();
+        }
+
 
         //============================   DRAWING   ============================
 
         WriteableBitmap bitmap;
 
-        byte[] cyanColour = new byte[] { 255, 170, 15, 255 };
+        byte[] cyanColour = new byte[] { 230, 200, 20, 255 };
         byte[] magentaColour = new byte[] { 140, 45, 255, 255 };
         byte[] yellowColour = new byte[] { 20, 220, 255, 255 };
         byte[] blackColour = new byte[] { 20, 20, 20, 255 };
@@ -527,5 +617,7 @@ namespace QuayCodeV2
                 encoder.Save(stream);
             }
         }
+
+
     }
 }

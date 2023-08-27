@@ -43,7 +43,7 @@ namespace QuayCodeV2
                 output[i] = input[i];
             }
 
-            eccAmount = inputCount / 2;
+            eccAmount = input.Length - inputCount;
 
             if(rsD.Decode(output, eccAmount, erasures))
             {
