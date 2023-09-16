@@ -33,18 +33,6 @@ namespace QuayCodeV2
             Mat frame = new();
             bool pause = false;
 
-            Mat QuayIn = new();
-            Mat outline = new();
-            Mat templateOutput = new();
-
-            CascadeClassifier haar = new();
-
-            //Mat Q12Temp = CvInvoke.Imread("C:\\Users\\Ryan\\source\\repos\\CMYKMatrixTheory\\QuayCodeV2\\Resources\\Q12Temp.png");
-            //Mat Q18Temp = CvInvoke.Imread("Resources/Q18Temp.png");
-            //Mat Q32Temp = CvInvoke.Imread("Resources/Q32Temp.png");
-
-            //CvInvoke.CvtColor(Q12Temp, Q12Temp, Emgu.CV.CvEnum.ColorConversion.Bgr2Bgr555);
-
             while (!pause)
             {
                 vid.Read(frame);
@@ -225,13 +213,14 @@ namespace QuayCodeV2
 
             if(scaleFactor != 100)
             {
-                CvInvoke.PutText(image, scaleFactor.ToString(), PointFToPoint(cnt[0]), FontFace.HersheyPlain, 2, new MCvScalar(255, 255, 0));
+                CvInvoke.PutText(image, scaleFactor.ToString(), PointFToPoint(cnt[0]), FontFace.HersheyPlain, 2, new MCvScalar(0, 0, 0));
                 DrawFullGrid(binary, scaleFactor, scaleFactor, new MCvScalar(0, 0, 255, 100));
                 //binary.Save("C:\\Users\\Ryan\\Desktop\\Software Testing Ground\\Spam\\bin" + DateTime.Now.Ticks + ".png");
 
                 //NOW WE HAVE SIZE, WE CAN JUST DECODE.
+                //add header reading ability.
                 string read = ReadCode(binary, scaleFactor);
-                CvInvoke.PutText(image, read, PointFToPoint(cnt[2]), FontFace.HersheyPlain, 0.5, new MCvScalar(255, 255, 0));
+                CvInvoke.PutText(image, " " + read, PointFToPoint(cnt[2]), FontFace.HersheyPlain, 1.2, new MCvScalar(0, 0, 0));
 
             }
 
@@ -341,9 +330,11 @@ namespace QuayCodeV2
             int pixelLen = (int)1024 / sizeMetric;
             List<string> rawRead = new List<string>();
 
-            byte[] blue = new byte[] { 0, 0, 255 };
-            byte[] red = new byte[] { 255, 0, 0 };
-            byte[] yellow = new byte[] { 255, 255, 0 };
+            byte[] blue = new byte[] { 255, 0, 0 };
+            byte[] brightBlue = new byte[] { 255, 255, 0 };
+            byte[] red = new byte[] { 0, 0, 255 };
+            byte[] brightRed = new byte[] { 255, 0, 255 };
+            byte[] yellow = new byte[] { 0, 255, 255 };
             byte[] black = new byte[] { 0, 0, 0 };
             byte[] white = new byte[] { 255, 255, 255 };
 
@@ -369,7 +360,7 @@ namespace QuayCodeV2
             {
                 int x = dataArray[i].Item1 * pixelLen + (pixelLen/2);
                 int y = dataArray[i].Item2 * pixelLen + (pixelLen/2);
-                byte[] rawData = image.GetRawData(x, y);
+                byte[] rawData = image.GetRawData(y, x); //used to be x,y, but y,x seems to actually work.
 
                 if (rawData[0] == black[0] && rawData[1] == black[1] && rawData[2] == black[2])
                 {
@@ -377,13 +368,21 @@ namespace QuayCodeV2
                 }
                 else if (rawData[0] == white[0] && rawData[1] == white[1] && rawData[2] == white[2])
                 {
-                    rawRead.Add("00");
+                    rawRead.Add("10");
                 }
                 else if (rawData[0] == blue[0] && rawData[1] == blue[1] && rawData[2] == blue[2])
                 {
                     rawRead.Add("00");
                 }
+                else if (rawData[0] == brightBlue[0] && rawData[1] == brightBlue[1] && rawData[2] == brightBlue[2])
+                {
+                    rawRead.Add("00");
+                }
                 else if (rawData[0] == red[0] && rawData[1] == red[1] && rawData[2] == red[2])
+                {
+                    rawRead.Add("01");
+                }
+                else if (rawData[0] == brightRed[0] && rawData[1] == brightRed[1] && rawData[2] == brightRed[2])
                 {
                     rawRead.Add("01");
                 }
@@ -407,9 +406,7 @@ namespace QuayCodeV2
 
             if(output != null)
             {
-                MainWindow win = new MainWindow();
-                win.DecodeMain(output);
-                return output;
+                return new MainWindow().DecodeMain(output, sizeMetric);
             }
             else
             {

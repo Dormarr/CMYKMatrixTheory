@@ -16,7 +16,7 @@ namespace QuayCodeV2
 
         public int[] Encode(string input, int inputCount)
         {
-            int fieldSize = input.Length;
+            //int fieldSize = input.Length;
 
             ReedSolomonEncoder rsE = new ReedSolomonEncoder(field);
 
@@ -33,7 +33,6 @@ namespace QuayCodeV2
         public int[] Decode(byte[] input, int inputCount)
         {
             int[] erasures = new int[] { };
-
             ReedSolomonDecoder rsD = new ReedSolomonDecoder(field);
 
             int[] output = new int[input.Length];
