@@ -212,7 +212,7 @@ namespace QuayCodeV2
 
             string toSend = prefix + converted;
 
-            string[] finalPrefix = EncodeToPairs(toSend);
+            string[] finalPrefix = EncodeToPairsNew(toSend);
 
             DrawHeader(finalPrefix);
         }

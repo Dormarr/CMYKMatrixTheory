@@ -21,6 +21,7 @@ using System.Text;
 using Emgu.CV.ML;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace QuayCodeV2
 {
@@ -219,7 +220,12 @@ namespace QuayCodeV2
 
                 //NOW WE HAVE SIZE, WE CAN JUST DECODE.
                 //add header reading ability.
-                string read = ReadCode(binary, scaleFactor);
+
+                int dataCount = ReadHeader(binary, scaleFactor)[0];
+                string readUntrunc = ReadCode(binary, scaleFactor);
+
+                string read = TruncateData(readUntrunc, dataCount, scaleFactor);
+
                 CvInvoke.PutText(image, " " + read, PointFToPoint(cnt[2]), FontFace.HersheyPlain, 1.2, new MCvScalar(0, 0, 0));
 
             }
@@ -324,20 +330,59 @@ namespace QuayCodeV2
             }
         }
 
+        int[] ReadHeader(Mat image, int sizeMetric)
+        {
+            (int, int)[] headerSlots = new (int, int)[] { };
+            (int, int)[] header12 = new (int, int)[] { (8, 4), (9, 4), (10, 4), (11, 4), (12, 4), (13, 4) };
+            (int, int)[] header18 = new (int, int)[] { (13, 3), (14, 3), (15, 3), (16, 3), (17, 3), (18, 3) };
+            (int, int)[] header32 = new (int, int)[] { (13, 3), (14, 3), (15, 3), (16, 3), (17, 3), (18, 3), (19, 3), (20, 3), (21, 3), (22, 3), (23, 3), (24, 3), (25, 3), (26, 3), (27, 3), (28, 3) };
+
+
+            switch (sizeMetric)
+            {
+                case 16:
+                    headerSlots = header12;
+                    break;
+                case 22:
+                    headerSlots = header18;
+                    break;
+                case 36:
+                    headerSlots = header32;
+                    break;
+            }
+
+            List<string> rawHeader = CodeReader(headerSlots, sizeMetric, image);
+
+            string[] dataCountArray = new string[] { (rawHeader[0] + rawHeader[1]), (rawHeader[2] + rawHeader[3]) };
+
+            int[] ints = CustomBinary.ConvertFrom4Bit(dataCountArray);
+
+
+
+            int dataCountFinal = ints[1];
+
+            if(ints[0] == 1)
+            {
+                dataCountFinal += 10;
+            }else if (ints[0] == 2)
+            {
+                dataCountFinal += 20;
+            }
+
+            int[] finalInts = new int[] { dataCountFinal, 1 };
+
+            return finalInts;
+        }
+
+        string TruncateData(string input, int dataLength, int sizeMetric)
+        {
+            string output = input.Substring(0, dataLength);
+
+            return output;
+        }
+
         string ReadCode(Mat image, int sizeMetric)
         {
-
-            int pixelLen = (int)1024 / sizeMetric;
-            List<string> rawRead = new List<string>();
-
-            byte[] blue = new byte[] { 255, 0, 0 };
-            byte[] brightBlue = new byte[] { 255, 255, 0 };
-            byte[] red = new byte[] { 0, 0, 255 };
-            byte[] brightRed = new byte[] { 255, 0, 255 };
-            byte[] yellow = new byte[] { 0, 255, 255 };
-            byte[] black = new byte[] { 0, 0, 0 };
-            byte[] white = new byte[] { 255, 255, 255 };
-
             (int, int)[] dataArray = new (int, int)[] { };
             (int, int)[] dataArray12 = new (int, int)[] { (8, 5), (9, 5), (10, 5), (11, 5), (12, 5), (13, 5), (8, 6), (9, 6), (10, 6), (11, 6), (12, 6), (13, 6), (8, 7), (9, 7), (10, 7), (11, 7), (12, 7), (13, 7), (3, 8), (4, 8), (5, 8), (6, 8), (7, 8), (8, 8), (9, 8), (10, 8), (11, 8), (12, 8), (13, 8), (3, 9), (4, 9), (5, 9), (6, 9), (7, 9), (8, 9), (9, 9), (10, 9), (11, 9), (12, 9), (13, 9), (3, 10), (4, 10), (5, 10), (6, 10), (7, 10), (8, 10), (9, 10), (10, 10), (11, 10), (12, 10), (13, 10), (3, 11), (4, 11), (5, 11), (6, 11), (7, 11), (8, 11), (9, 11), (10, 11), (11, 11), (12, 11), (13, 11), (3, 12), (4, 12), (5, 12), (6, 12), (7, 12), (8, 12), (9, 12), (10, 12), (11, 12), (12, 12), (13, 12), (4, 13), (5, 13), (6, 13), (7, 13), (8, 13), (9, 13), (10, 13) };
             (int, int)[] dataArray18 = new (int, int)[] { (8, 4), (9, 4), (10, 4), (11, 4), (12, 4), (13, 4), (14, 4), (15, 4), (16, 4), (17, 4), (18, 4), (19, 4), (8, 5), (9, 5), (10, 5), (11, 5), (12, 5), (13, 5), (14, 5), (15, 5), (16, 5), (17, 5), (18, 5), (19, 5), (8, 6), (9, 6), (10, 6), (11, 6), (12, 6), (13, 6), (14, 6), (15, 6), (16, 6), (17, 6), (18, 6), (19, 6), (8, 7), (9, 7), (10, 7), (11, 7), (12, 7), (13, 7), (14, 7), (15, 7), (16, 7), (17, 7), (18, 7), (19, 7), (3, 8), (4, 8), (5, 8), (6, 8), (7, 8), (8, 8), (9, 8), (10, 8), (11, 8), (12, 8), (13, 8), (14, 8), (15, 8), (16, 8), (17, 8), (18, 8), (19, 8), (3, 9), (4, 9), (5, 9), (6, 9), (7, 9), (8, 9), (9, 9), (10, 9), (11, 9), (12, 9), (13, 9), (14, 9), (15, 9), (16, 9), (17, 9), (18, 9), (19, 9), (3, 10), (4, 10), (5, 10), (6, 10), (7, 10), (8, 10), (9, 10), (10, 10), (11, 10), (12, 10), (13, 10), (14, 10), (15, 10), (16, 10), (17, 10), (18, 10), (19, 10), (3, 11), (4, 11), (5, 11), (6, 11), (7, 11), (8, 11), (9, 11), (10, 11), (11, 11), (12, 11), (13, 11), (14, 11), (15, 11), (16, 11), (17, 11), (18, 11), (19, 11), (3, 12), (4, 12), (5, 12), (6, 12), (7, 12), (8, 12), (9, 12), (10, 12), (11, 12), (12, 12), (13, 12), (14, 12), (15, 12), (16, 12), (17, 12), (18, 12), (19, 12), (3, 13), (4, 13), (5, 13), (6, 13), (7, 13), (8, 13), (9, 13), (10, 13), (11, 13), (12, 13), (13, 13), (14, 13), (15, 13), (16, 13), (17, 13), (18, 13), (19, 13), (3, 14), (4, 14), (5, 14), (6, 14), (7, 14), (8, 14), (9, 14), (10, 14), (11, 14), (12, 14), (13, 14), (3, 15), (4, 15), (5, 15), (6, 15), (7, 15), (8, 15), (9, 15), (10, 15), (11, 15), (12, 15), (13, 15), (3, 16), (4, 16), (5, 16), (6, 16), (7, 16), (8, 16), (9, 16), (10, 16), (11, 16), (12, 16), (13, 16), (3, 17), (4, 17), (5, 17), (6, 17), (7, 17), (8, 17), (9, 17), (10, 17), (11, 17), (12, 17), (13, 17), (3, 18), (4, 18), (5, 18), (6, 18), (7, 18), (8, 18), (9, 18), (10, 18), (11, 18), (12, 18), (13, 18), (4, 19), (5, 19), (6, 19), (7, 19), (8, 19), (9, 19), (10, 19) };
@@ -356,10 +401,44 @@ namespace QuayCodeV2
                     break;
             }
 
-            for(int i = 0; i < dataArray.Length; i++)
+            List<string> rawRead = CodeReader(dataArray, sizeMetric, image);
+
+            StringBuilder str = new StringBuilder();
+
+            foreach(string s in rawRead)
             {
-                int x = dataArray[i].Item1 * pixelLen + (pixelLen/2);
-                int y = dataArray[i].Item2 * pixelLen + (pixelLen/2);
+                str.Append(s);
+            }
+            string output = str.ToString();
+
+            if(output != null)
+            {
+                return new MainWindow().DecodeMain(output, sizeMetric);
+            }
+            else
+            {
+                return "botch";
+            }
+        }
+
+        List<string> CodeReader((int, int)[] dataArray, int sizeMetric, Mat image)
+        {
+            byte[] blue = new byte[] { 255, 0, 0 };
+            byte[] brightBlue = new byte[] { 255, 255, 0 };
+            byte[] red = new byte[] { 0, 0, 255 };
+            byte[] brightRed = new byte[] { 255, 0, 255 };
+            byte[] yellow = new byte[] { 0, 255, 255 };
+            byte[] black = new byte[] { 0, 0, 0 };
+            byte[] white = new byte[] { 255, 255, 255 };
+
+            List<string> rawRead = new List<string>();
+
+            int pixelLen = (int)1024 / sizeMetric;
+
+            for (int i = 0; i < dataArray.Length; i++)
+            {
+                int x = dataArray[i].Item1 * pixelLen + (pixelLen / 2);
+                int y = dataArray[i].Item2 * pixelLen + (pixelLen / 2);
                 byte[] rawData = image.GetRawData(y, x); //used to be x,y, but y,x seems to actually work.
 
                 if (rawData[0] == black[0] && rawData[1] == black[1] && rawData[2] == black[2])
@@ -396,22 +475,8 @@ namespace QuayCodeV2
                 }
             }
 
-            StringBuilder str = new StringBuilder();
-
-            foreach(string s in rawRead)
-            {
-                str.Append(s);
-            }
-            string output = str.ToString();
-
-            if(output != null)
-            {
-                return new MainWindow().DecodeMain(output, sizeMetric);
-            }
-            else
-            {
-                return "botch";
-            }
+            return rawRead;
         }
+
     }
 }

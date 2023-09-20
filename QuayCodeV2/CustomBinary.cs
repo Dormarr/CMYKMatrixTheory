@@ -61,7 +61,32 @@ namespace QuayCodeV2
             }
             return stringBuilder.ToString();
         }
+        public static int[] ConvertFrom4Bit(string[] input)
+        {
+            Dictionary<string, int> BitKeyBack = new Dictionary<string, int> {
+        { "0110", 0},
+        { "0101", 1},
+        { "1010", 2},
+        { "1011", 3},
+        { "1000", 4},
+        { "1001", 5},
+        { "0111", 6},
+        { "0100", 7},
+        { "1100", 8},
+        { "1101", 9}
+    };
 
+            List<int> ints = new List<int>();
 
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (BitKeyBack.ContainsKey(input[i]))
+                {
+                    ints.Add(BitKeyBack[input[i]]);
+                }
+            }
+
+            return ints.ToArray();
+        }
     }
 }
