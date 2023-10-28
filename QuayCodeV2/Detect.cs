@@ -176,6 +176,8 @@ namespace QuayCodeV2
                 PointF to = cnt[(i + 1) % cnt.Count];
                 Line ln = new Line();
                 CvInvoke.Line(img, PointFToPoint(from), PointFToPoint(to), color, 2);
+
+                //Redefine when this should be drawn, because it looks like madness at the moment.
             }
         }
 
@@ -202,7 +204,7 @@ namespace QuayCodeV2
             CvInvoke.WarpPerspective(image, binary, m, new Size(bits, bits));
             CvInvoke.Threshold(binary, binary, 64, 255, ThresholdType.Binary);// | ThresholdType.Otsu);
 
-
+            //Tweak the recognisability thresholds, need to pick it up easily.
 
             //Mat element = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(4, 4), new Point(0, 0));
             //CvInvoke.Erode(binary, binary, element, new Point(0, 0), 4, BorderType.Constant, new MCvScalar(255, 255, 255));
@@ -239,6 +241,8 @@ namespace QuayCodeV2
 
         static int DetermineSize(Mat image)
         {
+            //Add a version of this that accounts for Black border AND white border (if on black background)
+
             if (CheckForSize(image, 64, 16))
             {
                 return 16;

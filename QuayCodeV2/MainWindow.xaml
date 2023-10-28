@@ -83,7 +83,7 @@
     </Window.Effect>
     <Grid Background="Transparent" Height="570" Width="940">
         <TabControl Foreground="#00000000" BorderBrush="#00ACACAC" Background="Transparent">
-            <TabItem Header="Generate" Margin="2,2,-2,-4" Width="100" Foreground="#FF141414" Background="#FFF2F4F5" IsSelected="True" BorderBrush="Transparent">
+            <TabItem Header="Generate" Margin="2,2,-2,-4" Width="100" Foreground="#FF141414" Background="#D4D4D4" IsSelected="True" BorderBrush="Transparent">
                 <Grid Background="#00141414">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="95*"/>
@@ -96,7 +96,7 @@
                         </Image.Effect>
                     </Image>
                     <Border Background="#F2F4F5" BorderThickness="0" Margin="0,0,500,0" CornerRadius="0,7,7,7" Grid.ColumnSpan="2"/>
-                    <Button x:Name="dwnldBtn" Content="Download" Style="{StaticResource DownloadBtn}" HorizontalAlignment="Left" Margin="396,436,0,0" VerticalAlignment="Top" Width="215" Click="dwnldBtn_Click" Height="36" FontSize="18" Background="#FFF2F4F5" Foreground="#B2141414" Opacity="0.9" BorderThickness="1,1,1,2" Grid.Column="1">
+                    <Button x:Name="dwnldBtn" Content="Download" Style="{StaticResource DownloadBtn}" HorizontalAlignment="Left" Margin="386,419,0,0" VerticalAlignment="Top" Width="215" Click="dwnldBtn_Click" Height="36" FontSize="18" Background="#FFF2F4F5" Foreground="#B2141414" Opacity="0.9" BorderThickness="1,1,1,2" Grid.Column="1">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="7"/>
@@ -109,8 +109,8 @@
                             </LinearGradientBrush>
                         </Button.BorderBrush>
                     </Button>
-                    <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="36,116,0,0" TextWrapping="Wrap" Text="Input" VerticalAlignment="Top" Width="361" Height="113" SelectionBrush="#FFC8DFF1" Background="Transparent" Grid.ColumnSpan="2"/>
-                    <Button x:Name="encodeBtn" Content="Encode" Style="{StaticResource MyButton2}" HorizontalAlignment="Left" Margin="138,244,0,0" VerticalAlignment="Top" Width="157" Click="encodeBtn_Click" Height="26" Background="#FF141414" Foreground="#FFF2F4F5" Grid.ColumnSpan="2">
+                    <TextBox x:Name="txtInput" HorizontalAlignment="Left" Margin="36,116,0,0" TextWrapping="Wrap" Text="Input" VerticalAlignment="Top" Width="361" Height="182" SelectionBrush="#FFC8DFF1" Background="Transparent" Grid.ColumnSpan="2" FontSize="14"/>
+                    <Button x:Name="encodeBtn" Content="Encode" Style="{StaticResource MyButton2}" HorizontalAlignment="Left" Margin="138,323,0,0" VerticalAlignment="Top" Width="157" Click="encodeBtn_Click" Height="29" Background="#FF141414" Foreground="#FFF2F4F5" Grid.ColumnSpan="2" FontSize="14">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="7"/>
@@ -123,9 +123,7 @@
                             </LinearGradientBrush>
                         </Button.BorderBrush>
                     </Button>
-                    <TextBlock x:Name="encodedOut" HorizontalAlignment="Left" Margin="36,284,0,0" TextWrapping="Wrap" Text="EncodedOut" VerticalAlignment="Top" Height="97" Width="254" Grid.ColumnSpan="2"/>
-                    <Button x:Name="decodeBtn" Content="Decode" HorizontalAlignment="Left" Margin="133,381,0,0" VerticalAlignment="Top" Width="157" Click="decodeBtn_Click" Grid.ColumnSpan="2"/>
-                    <TextBlock x:Name="decodedOut" HorizontalAlignment="Left" Margin="36,419,0,0" TextWrapping="Wrap" Text="DecodedOut" VerticalAlignment="Top" Height="97" Width="254" Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="encodedOut" HorizontalAlignment="Left" Margin="41,471,0,0" TextWrapping="Wrap" Text="EncodedOut" VerticalAlignment="Top" Height="42" Width="361" Grid.ColumnSpan="2"/>
                     <Label x:Name="Version_Number" Content="QuayCode™ Alpha 0.3.1" HorizontalAlignment="Right" Margin="0,0,6,36" VerticalAlignment="Bottom" Width="171" Foreground="#FFF2F4F5" FontSize="10" HorizontalContentAlignment="Right" Grid.Column="1"/>
                     <Rectangle x:Name="draggable" HorizontalAlignment="Left" Height="37" Margin="249,32,0,0" VerticalAlignment="Top" Width="489" MouseDown="drag_MouseDown" Fill="#FF141414" Grid.Column="1"/>
                     <Button x:Name="closeBtn" Margin="706,36,10,477" Click="close_Click" Style="{StaticResource MyButton}" Grid.Column="1">
@@ -148,8 +146,8 @@
             </TabItem>
             <TabItem Header="Read" Margin="30,2,-30,-4" Width="100" Background="#FFF2F4F5" BorderBrush="Transparent">
                 <Grid Background="#f2f4f5">
-                    <Button Content="Detect" HorizontalAlignment="Center" Click="detect_Click" Margin="0,377,0,0" VerticalAlignment="Top" Height="37" Width="118"/>
-                    <TextBlock x:Name="decodedText" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Output:..." VerticalAlignment="Center" Height="95" Width="262"/>
+                    <Button Content="Detect" HorizontalAlignment="Left" Click="detect_Click" Margin="153,330,0,0" VerticalAlignment="Top" Height="36" Width="118"/>
+                    <TextBlock x:Name="decodedText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Output:..." VerticalAlignment="Top" Height="95" Width="262" Margin="81,176,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings" Margin="58,2,-58,-4" Width="100" Background="#FFF2F4F5" BorderBrush="Transparent">

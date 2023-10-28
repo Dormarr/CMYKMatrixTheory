@@ -66,6 +66,10 @@ namespace QuayCodeV2
             {
                 sizeMetric = 36;
             }
+            else if(inputCount == 0)
+            {
+                MessageBox.Show("Input Box is Empty.");
+            }
             else
             {
                 MessageBox.Show("Lessen the input guy, it's too damn long!");
@@ -85,7 +89,7 @@ namespace QuayCodeV2
             switch (sizeMetric)
             {
                 case 16:
-                    output = input.PadRight(20, 'x');
+                    output = input.PadRight(20, 'x'); //Make space for RS ECC symbols
                     break;
                 case 22:
                     output = input.PadRight(53, 'x');
@@ -136,28 +140,6 @@ namespace QuayCodeV2
             string[] toDraw = EncodeToPairsNew(output);
 
             CreateGraphicCode(toDraw);
-        }
-
-        private string[] EncodeToPairs(string input) //THIS IS THE ISSUE
-        {
-            List<string> distributedStrings = new List<string>();
-
-            for(int i = 0; i < input.Length/2; i++)
-            {
-                if(i + 1 < input.Length)
-                {
-                    string twoChars = input.Substring(i, 2);
-                    distributedStrings.Add(twoChars);
-                }
-                else
-                {
-                    string singleChar = input.Substring(i, 1);
-                    distributedStrings.Add(singleChar);
-                }
-            }
-            string[] pairsArray = distributedStrings.ToArray();
-
-            return pairsArray;
         }
 
         private string[] EncodeToPairsNew(string input)
@@ -218,11 +200,6 @@ namespace QuayCodeV2
         }
 
         //============================   DECODE   ============================
-
-        private void decodeBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void detect_Click(object sender, RoutedEventArgs e)
         {
@@ -298,6 +275,9 @@ namespace QuayCodeV2
 
 
         //============================   DRAWING   ============================
+
+        //You should centralise the drawing techniques and point towards a method instead of writing it out each time.
+        //Could be worth centralising the static data in a seperate class, like a utils file including colour codes and coord data.
 
         WriteableBitmap bitmap;
 
@@ -466,7 +446,8 @@ namespace QuayCodeV2
 
         private void DrawHeader(string[] prefix)
         {
-            
+            //Rename things for consistency. Prefix & Header are used interchangably.
+            //The prefix is the defining part of the code that determines message length etc. Also includes dud d-bits at the end of the graphic code.
             int sF = 240 / sizeMetric;
 
             (int, int)[] prefixSlots12 = new (int, int)[] { (8, 4), (9, 4), (10, 4), (11, 4), (12, 4), (13, 4), (11, 13), (12, 13), (13, 13) };
