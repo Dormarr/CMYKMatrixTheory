@@ -1,6 +1,7 @@
 <h1>Quay Code</h1>
 
-INSERT PHOTO
+<img width="600" alt="Quay Smol" src="https://github.com/Dormarr/CMYKMatrixTheory/assets/134154948/1b98c4c6-a52f-41c7-95ad-06326d975f28">
+
 
 Quay Code is a desktop based, open source CMYK 2D matrix code generator and reader. Currently it only runs on Windows but macOS and iOS development is underway. It uses dual binary encoding, meaning each colour contains 2 binary bits, allowing for potentially twice the data to be stored in each code. It uses Reed Soloman Error Correction for reliable decoding, and I'm constantly working on enhancing the CV capabilities for better and faster recognition of the codes.
 
