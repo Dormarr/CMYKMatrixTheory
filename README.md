@@ -24,7 +24,7 @@ I've only recently made this public so this Readme is lacking, but I'll work on 
 
 <br>
 
-  Planned Implementations
+##Planned Implementations
   - QR Standard alongside Quay.
   - Desktop Snipping for code recognition.
   - Improved computer vision capabilities and interaction with application.
