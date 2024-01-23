@@ -20,7 +20,7 @@ The idea began from questioning why there are no triangular QR codes, which fell
 Although I fiercly admire the global compatibility and ISO standards of QR codes, I believe we should have more options, more freedom and independence and variation in the technology we use. There is value to centrilsation, but also to customisation.
 
 
-I've only revently made this public so this Readme is lacking, but I'll work on it!
+I've only recently made this public so this Readme is lacking, but I'll work on it!
 
 <br>
 
